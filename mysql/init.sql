@@ -1,0 +1,1 @@
+create table ping_log (tst timestamp primary key);

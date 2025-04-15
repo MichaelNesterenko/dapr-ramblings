@@ -1,0 +1,18 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: log-db
+spec:
+  type: bindings.mysql
+  version: v1
+  metadata:
+    - name: url
+      value: "dapr:dapr@tcp(mysql:3306)/dapr_demo"
+    - name: maxIdleConns
+      value: "10"
+    - name: maxOpenConns
+      value: "100"
+    - name: connMaxLifetime
+      value: "3600s"
+    - name: connMaxIdleTime
+      value: "1800s"

@@ -1,0 +1,41 @@
+
+services:
+  shell:
+    build: shell
+    entrypoint: ["sleep", "infinity"]
+  service-a: &service
+    image: dapr-demo-service:latest
+    environment:
+      target_service: service-b
+    restart: always
+  service-a-dapr: &dapr
+    build: dapr
+    entrypoint: [
+      "/daprd",
+      "--app-id", "service-a",
+      "--app-port", "8080",
+      "--resources-path", "/components"
+    ]
+    network_mode: "service:service-a"
+    restart: always
+  service-b:
+    <<: *service
+    environment: 
+      target_service: service-a
+  service-b-dapr:
+    <<: *dapr
+    entrypoint: [
+      "/daprd",
+      "--app-id", "service-b",
+      "--app-port", "8080",
+      "--resources-path", "/components"
+    ]
+    network_mode: "service:service-b"
+  mysql:
+    build: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: dapr
+      MYSQL_PASSWORD: dapr
+      MYSQL_DATABASE: dapr_demo
+    restart: always
